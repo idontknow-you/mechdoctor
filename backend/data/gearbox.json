@@ -1,0 +1,182 @@
+{
+  "machine": "gearbox",
+  "label": "Gearbox",
+  "description": "Enclosed industrial speed-reducer gearbox with oil lubrication.",
+  "typical_temp_range_c": [40, 85],
+  "fields": ["temperature_c", "vibration", "noise", "leakage", "speed_rpm", "performance", "notes"],
+  "general_safety": [
+    "Isolate and lock out the drive and secure the load against movement before opening any gearbox cover.",
+    "Gearbox oil can be hot: let it cool or wear heat-resistant gloves and eye protection when draining or sampling.",
+    "Vent pressure through the breather before removing fill or drain plugs."
+  ],
+  "general_inspection": [
+    "Check the oil level, colour and smell, and take an oil sample if possible.",
+    "Check visually for leaks at seals, covers and the breather.",
+    "Compare casing temperature and noise with a known-good reading for this gearbox."
+  ],
+  "faults": [
+    {
+      "id": "gear_wear",
+      "name": "Gear tooth wear or damage",
+      "reasoning": "Worn, pitted or chipped gear teeth produce whining or grinding noise and raised vibration, often with metal particles in the oil.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["whining", "grinding"], "weight": 3, "symptom": "Whining or grinding noise from the gears"},
+        {"field": "noise", "op": "in", "value": ["rattling", "unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 2, "symptom": "Raised vibration"},
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 1, "symptom": "High temperature"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 1, "symptom": "Reduced performance"},
+        {"field": "notes", "op": "keywords", "value": ["gear", "tooth", "teeth", "pitting", "metal", "chips", "debris", "backlash"], "weight": 3, "symptom": "Notes mention gear damage, metal particles or backlash"}
+      ],
+      "inspection_steps": [
+        "Inspect the oil and magnetic drain plug for metal particles or flakes.",
+        "Look through the inspection cover for pitting, scuffing or chipped teeth.",
+        "Check backlash against the manufacturer's limit.",
+        "Take vibration readings if a meter is available and compare over time."
+      ],
+      "maintenance_actions": [
+        "Change the oil and flush the gearbox if contamination is found.",
+        "Replace damaged gears or the gear set in matched pairs.",
+        "Check alignment and loading to find what caused the wear."
+      ],
+      "safety": [
+        "Lock out the drive and block the output shaft before opening the cover.",
+        "Wear gloves when handling gears; broken teeth can be sharp."
+      ]
+    },
+    {
+      "id": "lubrication_problem",
+      "name": "Lubrication problem (low, degraded or wrong oil)",
+      "reasoning": "Too little, overfilled, degraded or wrong-grade oil raises friction and churning heat, which shows up as high temperature and then noise and wear.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 85, "weight": 3, "symptom": "High oil or casing temperature (85 °C or more)"},
+        {"field": "temperature_c", "op": "gte", "value": 70, "weight": 1, "symptom": "Raised temperature"},
+        {"field": "noise", "op": "in", "value": ["whining", "grinding"], "weight": 1, "symptom": "Whining or grinding noise"},
+        {"field": "leakage", "op": "in", "value": ["minor", "major"], "weight": 1, "symptom": "Oil loss can lower the oil level"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration"},
+        {"field": "notes", "op": "keywords", "value": ["oil", "lubric", "level", "dry", "foam", "dark", "burnt", "viscos", "overfill"], "weight": 3, "symptom": "Notes mention oil level, condition or grade"}
+      ],
+      "inspection_steps": [
+        "Check the oil level at the sight glass or dipstick and look for overfilling.",
+        "Check the oil colour, smell, foaming and water contamination.",
+        "Confirm the oil grade and viscosity match the manufacturer's specification.",
+        "Check the breather and cooling (fan, cooler, fins) for blockage."
+      ],
+      "maintenance_actions": [
+        "Top up or drain to the correct level with the specified oil.",
+        "Change degraded oil and the filter, and clear the breather.",
+        "Clean cooling surfaces and check ambient temperature."
+      ],
+      "safety": [
+        "Let hot oil cool before draining or sampling.",
+        "Dispose of used oil according to site rules and clean spills immediately."
+      ]
+    },
+    {
+      "id": "bearing_wear",
+      "name": "Bearing wear",
+      "reasoning": "Worn gearbox bearings cause rumbling or grinding noise, rising vibration and heat at the shaft ends.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["grinding", "whining", "rattling"], "weight": 3, "symptom": "Bearing-type noise (grinding, whining or rattling)"},
+        {"field": "noise", "op": "in", "value": ["unusual"], "weight": 2, "symptom": "Unusual noise"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 3, "symptom": "Raised vibration"},
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 2, "symptom": "High temperature near the bearing housings"},
+        {"field": "notes", "op": "keywords", "value": ["bearing", "rumble", "grind", "seize"], "weight": 3, "symptom": "Notes mention bearings or rumbling"}
+      ],
+      "inspection_steps": [
+        "Compare housing temperature at the input and output shaft bearings.",
+        "Listen with a stethoscope near each bearing housing.",
+        "Check shaft end float and free rotation by hand, with the gearbox locked out.",
+        "Check the oil for bearing metal."
+      ],
+      "maintenance_actions": [
+        "Replace worn bearings and check shaft and housing fits.",
+        "Change the oil and clean the gearbox after the repair.",
+        "Check alignment and belt or chain loads on the shafts."
+      ],
+      "safety": [
+        "Lock out the drive before touching shafts or couplings.",
+        "Support heavy components with proper lifting equipment when removing covers."
+      ]
+    },
+    {
+      "id": "misalignment",
+      "name": "Shaft misalignment / coupling problem",
+      "reasoning": "Misalignment between the gearbox and motor or driven shaft loads the bearings and seals and produces high vibration, often with knocking noise.",
+      "triggers": [
+        {"field": "vibration", "op": "in", "value": ["high"], "weight": 3, "symptom": "High vibration"},
+        {"field": "vibration", "op": "in", "value": ["medium"], "weight": 1, "symptom": "Moderate vibration"},
+        {"field": "noise", "op": "in", "value": ["knocking", "humming", "rattling"], "weight": 1, "symptom": "Knocking or humming noise"},
+        {"field": "temperature_c", "op": "gte", "value": 70, "weight": 1, "symptom": "Raised temperature"},
+        {"field": "notes", "op": "keywords", "value": ["misalign", "coupling", "shaft", "alignment", "soft foot"], "weight": 3, "symptom": "Notes mention alignment, coupling or shaft problems"}
+      ],
+      "inspection_steps": [
+        "Check input and output shaft alignment with a dial gauge or laser tool.",
+        "Inspect the coupling for wear, backlash or damaged elements.",
+        "Check for soft foot and loose mounting bolts.",
+        "Check for oil leakage at the shaft seals, which misalignment accelerates."
+      ],
+      "maintenance_actions": [
+        "Re-align the gearbox within the coupling tolerance.",
+        "Replace a worn coupling.",
+        "Correct the base or shimming if it is uneven."
+      ],
+      "safety": [
+        "Lock out the drive and secure the load before touching the coupling.",
+        "Re-fit all guards before restarting."
+      ]
+    },
+    {
+      "id": "oil_leak_seal_failure",
+      "name": "Oil leak / seal failure",
+      "reasoning": "Worn shaft seals, loose covers or a blocked breather let oil escape, which can lower the oil level and lead to overheating and wear.",
+      "triggers": [
+        {"field": "leakage", "op": "in", "value": ["minor", "major"], "weight": 3, "symptom": "Visible oil leakage"},
+        {"field": "leakage", "op": "in", "value": ["major"], "weight": 1, "symptom": "Heavy leakage"},
+        {"field": "notes", "op": "keywords", "value": ["leak", "oil", "seal", "drip", "wet", "breather"], "weight": 3, "symptom": "Notes mention oil leakage, seals or the breather"},
+        {"field": "temperature_c", "op": "gte", "value": 70, "weight": 1, "symptom": "Raised temperature, possibly from low oil"}
+      ],
+      "inspection_steps": [
+        "Find the source: input or output shaft seal, cover joint, drain plug or breather.",
+        "Check the oil level and top up temporarily if safe to do so.",
+        "Check that the breather is clear; a blocked breather raises internal pressure.",
+        "Check shaft surfaces under the seals for grooves or wear."
+      ],
+      "maintenance_actions": [
+        "Replace the leaking seal and check the shaft surface.",
+        "Re-seal cover joints and tighten bolts evenly.",
+        "Clear or replace the breather and restore the correct oil level."
+      ],
+      "safety": [
+        "Clean oil off floors and walkways promptly to avoid slips.",
+        "Lock out the drive before working near the shaft seals."
+      ]
+    },
+    {
+      "id": "overload_shock_loading",
+      "name": "Overload / shock loading",
+      "reasoning": "Loads above the gearbox rating, or repeated shocks from jams and hard starts, overheat the oil and stress the gears, bearings and shafts.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 85, "weight": 2, "symptom": "High temperature (85 °C or more)"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 2, "symptom": "Reduced performance under load"},
+        {"field": "noise", "op": "in", "value": ["knocking", "rattling"], "weight": 2, "symptom": "Knocking under load, typical of shock loading"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration"},
+        {"field": "notes", "op": "keywords", "value": ["overload", "shock", "jam", "stall", "torque", "heavy", "start-stop", "snatch"], "weight": 3, "symptom": "Notes mention overload, jams or shock loads"}
+      ],
+      "inspection_steps": [
+        "Compare the actual load or motor current with the gearbox rating and service factor.",
+        "Check the driven machine for jams, binding or intermittent heavy loads.",
+        "Check the starting method and the number of starts per hour.",
+        "Inspect couplings, keys and shafts for signs of shock damage."
+      ],
+      "maintenance_actions": [
+        "Reduce the load or fix the process cause of the shocks.",
+        "Fit or adjust a torque limiter or soft starter where appropriate.",
+        "Review gearbox sizing if the real duty is above its rating."
+      ],
+      "safety": [
+        "Lock out the drive and release stored energy in the driven machine before clearing a jam.",
+        "Do not restart repeatedly after a trip; investigate first."
+      ]
+    }
+  ]
+}

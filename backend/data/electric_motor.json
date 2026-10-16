@@ -1,0 +1,185 @@
+{
+  "machine": "electric_motor",
+  "label": "Electric Motor",
+  "description": "Three-phase induction motor driving pumps, fans, conveyors and similar loads.",
+  "typical_temp_range_c": [40, 80],
+  "fields": ["temperature_c", "vibration", "noise", "leakage", "speed_rpm", "performance", "notes"],
+  "general_safety": [
+    "Isolate and lock out/tag out the motor supply before opening terminal boxes or touching rotating parts.",
+    "Let hot surfaces cool, or wear heat-resistant gloves, before touching the casing or bearings.",
+    "Only qualified personnel should take electrical measurements on a live motor."
+  ],
+  "general_inspection": [
+    "Record the nameplate data (rated current, speed, insulation class) and compare with measured values.",
+    "Check visually for dust build-up, loose bolts, burnt smell and damaged cables.",
+    "Re-take the readings under steady load for a reliable comparison."
+  ],
+  "faults": [
+    {
+      "id": "overload",
+      "name": "Overload",
+      "reasoning": "Sustained overload raises winding current and heating, so the motor runs hot while vibration can stay normal. A hot motor with low vibration fits this pattern.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 3, "symptom": "Casing temperature is high (80 °C or more)"},
+        {"field": "temperature_c", "op": "gte", "value": 90, "weight": 1, "symptom": "Casing temperature is very high (90 °C or more)"},
+        {"field": "vibration", "op": "in", "value": ["low"], "weight": 1, "symptom": "Low vibration points away from a purely mechanical cause"},
+        {"field": "speed_rpm", "op": "lte", "value": 1350, "weight": 2, "symptom": "Speed well below a typical 1,450 RPM, possible slip under heavy load"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 1, "symptom": "Reduced performance under load"},
+        {"field": "notes", "op": "keywords", "value": ["hot", "overheat", "heat"], "weight": 1, "symptom": "Notes mention heating"},
+        {"field": "notes", "op": "keywords", "value": ["overload", "heavy load", "trip", "stall", "jam", "high current", "amps"], "weight": 3, "symptom": "Notes mention overload, tripping or jamming"}
+      ],
+      "inspection_steps": [
+        "Measure running current on all three phases and compare with the nameplate full-load current.",
+        "Check the driven load for jamming, a blocked discharge or excess process demand.",
+        "Check whether the thermal overload protection is tripping or the starts per hour are too high.",
+        "Record temperature against current over a full duty cycle."
+      ],
+      "maintenance_actions": [
+        "Reduce the load or correct the process condition causing the extra demand.",
+        "Verify overload relay and protection settings against the nameplate.",
+        "If the load is genuinely higher than designed, review motor sizing with the responsible engineer."
+      ],
+      "safety": [
+        "Do not keep running a motor that trips repeatedly; investigate first.",
+        "Use a calibrated clamp meter rated for the voltage when measuring current."
+      ]
+    },
+    {
+      "id": "poor_ventilation",
+      "name": "Poor ventilation / cooling",
+      "reasoning": "Dust-clogged cooling fins, a damaged fan or a blocked airflow path stops the motor shedding heat, so it heats up even at normal load. High temperature with low vibration is consistent with this.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 2, "symptom": "Casing temperature is high (80 °C or more)"},
+        {"field": "temperature_c", "op": "gte", "value": 90, "weight": 1, "symptom": "Casing temperature is very high (90 °C or more)"},
+        {"field": "vibration", "op": "in", "value": ["low"], "weight": 1, "symptom": "Low vibration points away from a purely mechanical cause"},
+        {"field": "notes", "op": "keywords", "value": ["hot", "overheat", "heat"], "weight": 1, "symptom": "Notes mention heating"},
+        {"field": "notes", "op": "keywords", "value": ["dust", "dirty", "clog", "blocked", "fan", "vent", "cooling", "enclosure", "ambient", "summer"], "weight": 3, "symptom": "Notes mention dust, a blocked vent or a cooling problem"}
+      ],
+      "inspection_steps": [
+        "Inspect the cooling fan, fan cover and cooling fins for dust, oil film or blockage.",
+        "Check clearance around the motor and the ambient temperature of the room or enclosure.",
+        "Confirm the fan is intact, turning the right way and firmly fixed.",
+        "Compare the temperature after cleaning to see whether it drops."
+      ],
+      "maintenance_actions": [
+        "Clean fins, fan and air inlets and remove obstructions around the motor.",
+        "Replace a cracked or loose cooling fan.",
+        "Improve airflow or add ventilation if the enclosure runs hot."
+      ],
+      "safety": [
+        "Lock out the motor before removing the fan cover.",
+        "Wear a dust mask and eye protection when cleaning."
+      ]
+    },
+    {
+      "id": "bearing_friction",
+      "name": "Bearing friction / lubrication problem",
+      "reasoning": "Worn, dry or over-greased bearings create friction heat at the shaft ends, usually with growing noise and vibration. Heat alone is weak evidence; noise and vibration make this more likely.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 2, "symptom": "High temperature, which bearing friction can cause"},
+        {"field": "temperature_c", "op": "gte", "value": 90, "weight": 1, "symptom": "Very high temperature (90 °C or more)"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 2, "symptom": "Raised vibration"},
+        {"field": "noise", "op": "in", "value": ["grinding", "whining", "rattling"], "weight": 3, "symptom": "Bearing-type noise (grinding, whining or rattling)"},
+        {"field": "noise", "op": "in", "value": ["unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "notes", "op": "keywords", "value": ["hot", "overheat", "heat"], "weight": 1, "symptom": "Notes mention heating"},
+        {"field": "notes", "op": "keywords", "value": ["bearing", "grease", "lubric", "squeal", "grind", "seize"], "weight": 3, "symptom": "Notes mention bearings, grease or grinding"}
+      ],
+      "inspection_steps": [
+        "Measure bearing housing temperature at both ends with an infrared thermometer; a large difference points to one bearing.",
+        "Listen with a stethoscope or screwdriver for grinding or rumbling.",
+        "Measure vibration at the bearing housings if a meter is available.",
+        "Check the greasing history and the grease type used."
+      ],
+      "maintenance_actions": [
+        "Re-grease with the specified grease and quantity; avoid over-greasing.",
+        "Replace the bearing if it is noisy, discoloured or still runs hot after re-greasing.",
+        "Check shaft fit and alignment while the bearing is out."
+      ],
+      "safety": [
+        "Lock out the motor before touching the shaft or coupling guard.",
+        "Keep the stethoscope or screwdriver clear of exposed rotating parts."
+      ]
+    },
+    {
+      "id": "winding_insulation",
+      "name": "Winding insulation degradation",
+      "reasoning": "Overheating, moisture or ageing degrades winding insulation, which causes more heating and can lead to short circuits. Very high temperature is a warning sign but not proof on its own.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 90, "weight": 2, "symptom": "Very high temperature (90 °C or more)"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 1, "symptom": "Reduced performance"},
+        {"field": "noise", "op": "in", "value": ["humming"], "weight": 2, "symptom": "Electrical humming from the motor"},
+        {"field": "notes", "op": "keywords", "value": ["burn", "smoke", "smell", "trip", "insulation", "winding", "short", "megger", "earth"], "weight": 3, "symptom": "Notes mention a burning smell, tripping or insulation problems"}
+      ],
+      "inspection_steps": [
+        "Measure insulation resistance with a megger (motor isolated and discharged) and compare with the acceptable minimum.",
+        "Compare winding resistance between the three phases.",
+        "Look for discolouration, burnt smell or varnish deterioration at the terminal box.",
+        "Check for moisture ingress."
+      ],
+      "maintenance_actions": [
+        "Dry out the windings if moisture is found, then re-test.",
+        "Plan rewinding or replacement if insulation resistance is low or falling.",
+        "Fix the cause of overheating so the repaired insulation is not damaged again."
+      ],
+      "safety": [
+        "Insulation testing must be done only on a de-energised, locked-out and discharged motor.",
+        "Treat a burning smell or smoke as an emergency: stop the motor and isolate it."
+      ]
+    },
+    {
+      "id": "voltage_supply_issue",
+      "name": "Supply voltage problem (low voltage, imbalance or lost phase)",
+      "reasoning": "Low voltage, voltage imbalance or loss of a phase makes the motor draw extra current and run hotter, with humming, reduced torque and sometimes more vibration.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["humming"], "weight": 3, "symptom": "Electrical humming"},
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 1, "symptom": "High temperature"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration from uneven torque"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 2, "symptom": "Reduced performance"},
+        {"field": "speed_rpm", "op": "lte", "value": 1350, "weight": 1, "symptom": "Speed below a typical 1,450 RPM"},
+        {"field": "notes", "op": "keywords", "value": ["voltage", "phase", "supply", "single phase", "fuse", "brownout"], "weight": 3, "symptom": "Notes mention voltage, phase or supply problems"}
+      ],
+      "inspection_steps": [
+        "Measure the voltage at the motor terminals on all three phases and calculate the imbalance.",
+        "Check fuses, contactor contacts and connections for a lost or loose phase.",
+        "Compare phase currents; a large imbalance points to a supply problem.",
+        "Check the voltage drop along long cable runs."
+      ],
+      "maintenance_actions": [
+        "Tighten or replace loose or burnt connections and replace damaged fuses or contactors.",
+        "Correct the supply voltage or imbalance with the electrical team.",
+        "Confirm phase-loss protection is fitted and working."
+      ],
+      "safety": [
+        "Take voltage measurements only with a rated meter and PPE, by a qualified electrician.",
+        "Lock out before re-terminating any connection."
+      ]
+    },
+    {
+      "id": "shaft_misalignment",
+      "name": "Shaft misalignment / coupling problem",
+      "reasoning": "Angular or parallel misalignment between motor and load shafts loads the bearings and coupling, giving high vibration (often at once or twice running speed), with heat as it worsens.",
+      "triggers": [
+        {"field": "vibration", "op": "in", "value": ["high"], "weight": 3, "symptom": "High vibration"},
+        {"field": "vibration", "op": "in", "value": ["medium"], "weight": 1, "symptom": "Moderate vibration"},
+        {"field": "noise", "op": "in", "value": ["knocking", "rattling"], "weight": 1, "symptom": "Knocking or rattling noise"},
+        {"field": "temperature_c", "op": "gte", "value": 70, "weight": 1, "symptom": "Raised temperature at bearings or coupling"},
+        {"field": "notes", "op": "keywords", "value": ["misalign", "coupling", "shaft", "axial", "soft foot", "alignment"], "weight": 3, "symptom": "Notes mention alignment, coupling or shaft problems"}
+      ],
+      "inspection_steps": [
+        "Check coupling alignment with a dial gauge or laser alignment tool.",
+        "Check for soft foot (a motor foot not seating flat) and loose foundation bolts.",
+        "Inspect the coupling for wear, cracks or overheated rubber elements.",
+        "Check for pipe strain or base movement."
+      ],
+      "maintenance_actions": [
+        "Re-align the motor and driven machine within the coupling tolerance.",
+        "Replace a worn coupling element.",
+        "Shim or re-grout the base if it is uneven."
+      ],
+      "safety": [
+        "Lock out the motor and secure the load before touching the coupling.",
+        "Re-fit all guards before restarting."
+      ]
+    }
+  ]
+}

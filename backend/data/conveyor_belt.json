@@ -1,0 +1,179 @@
+{
+  "machine": "conveyor_belt",
+  "label": "Conveyor Belt",
+  "description": "Belt conveyor with a motor and gearbox drive, idler rollers and head and tail pulleys.",
+  "typical_temp_range_c": [40, 70],
+  "fields": ["temperature_c", "vibration", "noise", "leakage", "speed_rpm", "performance", "notes"],
+  "general_safety": [
+    "Isolate, lock out and tag out the drive and release belt tension or stored energy before any work on the conveyor.",
+    "Never reach into pinch points, rollers or pulleys while the belt is running or could start.",
+    "Keep guards in place and use an emergency pull-cord check before restarting."
+  ],
+  "general_inspection": [
+    "Walk the belt line and check tracking, tension, idlers, pulleys and guards.",
+    "Check the drive motor current and temperature against the nameplate.",
+    "Check the loading and chute area for spillage, build-up or blockage."
+  ],
+  "faults": [
+    {
+      "id": "belt_slippage",
+      "name": "Belt slipping on the drive pulley",
+      "reasoning": "Low tension, worn pulley lagging, wet or contaminated surfaces or overloading let the belt slip on the drive pulley, causing squealing, reduced belt speed and friction heat.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["squealing"], "weight": 3, "symptom": "Squealing noise from the drive"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 3, "symptom": "Reduced belt speed or throughput"},
+        {"field": "temperature_c", "op": "gte", "value": 60, "weight": 1, "symptom": "Friction heat at the drive pulley"},
+        {"field": "notes", "op": "keywords", "value": ["slip", "squeal", "burning smell", "rubber smell", "smoke", "wet", "spill", "lagging"], "weight": 3, "symptom": "Notes mention slipping, squealing or a burning smell"}
+      ],
+      "inspection_steps": [
+        "Compare belt speed with the drive pulley speed, or look for slip marks on the pulley and belt.",
+        "Check the belt tension at the take-up and the take-up travel remaining.",
+        "Inspect the drive pulley lagging for wear, polish or contamination.",
+        "Check the belt load against the design capacity."
+      ],
+      "maintenance_actions": [
+        "Adjust the take-up to restore the correct belt tension.",
+        "Clean or replace worn or contaminated pulley lagging.",
+        "Reduce loading or improve belt wrap if slippage persists."
+      ],
+      "safety": [
+        "Lock out the drive and release belt tension before touching the pulleys or take-up.",
+        "Do not use sprays or dressings on a running belt."
+      ]
+    },
+    {
+      "id": "belt_mistracking",
+      "name": "Belt mistracking",
+      "reasoning": "A belt running off-centre rubs the structure, spills material and wears the edge. Causes include misaligned idlers or pulleys, uneven loading and material build-up.",
+      "triggers": [
+        {"field": "notes", "op": "keywords", "value": ["track", "drift", "wander", "edge", "one side", "misalign", "rubbing", "spill"], "weight": 3, "symptom": "Notes mention the belt drifting, rubbing or spilling"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration"},
+        {"field": "noise", "op": "in", "value": ["rattling", "unusual"], "weight": 1, "symptom": "Unusual noise, possibly the belt edge rubbing the frame"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 1, "symptom": "Spillage or reduced throughput"}
+      ],
+      "inspection_steps": [
+        "Walk the belt and note where it drifts and on which side.",
+        "Check idler and pulley alignment, squareness to the belt centreline and frame level.",
+        "Check for material build-up on rollers, pulleys or the return side.",
+        "Check the loading point: is the material landing off-centre?"
+      ],
+      "maintenance_actions": [
+        "Adjust or re-square the idlers and pulleys that cause the drift.",
+        "Clean build-up from rollers and pulleys.",
+        "Centre the load at the chute and fit or adjust tracking idlers if needed."
+      ],
+      "safety": [
+        "Never adjust idlers while the belt is running.",
+        "Lock out the drive before reaching near the pulleys or return rollers."
+      ]
+    },
+    {
+      "id": "idler_bearing_failure",
+      "name": "Idler or roller bearing failure",
+      "reasoning": "A seized or failing idler bearing makes grinding or squealing noise, raises roller temperature and can wear a flat on the roller or damage the belt.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["grinding", "squealing", "rattling"], "weight": 3, "symptom": "Grinding, squealing or rattling from the rollers"},
+        {"field": "noise", "op": "in", "value": ["unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "temperature_c", "op": "gte", "value": 70, "weight": 2, "symptom": "High temperature at a roller (70 °C or more)"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 2, "symptom": "Raised vibration"},
+        {"field": "notes", "op": "keywords", "value": ["roller", "idler", "seized", "bearing", "grind", "squeal", "glow"], "weight": 3, "symptom": "Notes mention rollers, idlers or bearings"}
+      ],
+      "inspection_steps": [
+        "Walk the line and listen for the noisy roller; check which idler runs hot with an infrared thermometer.",
+        "Check by hand (conveyor locked out) that each suspect roller turns freely.",
+        "Look for flat spots, damaged shells and missing rollers.",
+        "Check for material build-up around the roller ends."
+      ],
+      "maintenance_actions": [
+        "Replace seized or noisy rollers.",
+        "Replace missing or damaged rollers and check the neighbouring ones.",
+        "Add idler inspection and replacement to the regular maintenance route."
+      ],
+      "safety": [
+        "Never touch a roller while the belt is running; it can trap clothing or hands.",
+        "Let hot rollers cool and lock out the conveyor before replacing them."
+      ]
+    },
+    {
+      "id": "drive_motor_overload",
+      "name": "Drive motor overload",
+      "reasoning": "A heavy, jammed or badly loaded belt makes the drive motor draw extra current and run hot, sometimes tripping its protection.",
+      "triggers": [
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 3, "symptom": "Motor temperature is high (80 °C or more)"},
+        {"field": "temperature_c", "op": "gte", "value": 90, "weight": 1, "symptom": "Motor temperature is very high (90 °C or more)"},
+        {"field": "vibration", "op": "in", "value": ["low"], "weight": 1, "symptom": "Low vibration points away from a mechanical fault"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 1, "symptom": "Reduced performance under load"},
+        {"field": "noise", "op": "in", "value": ["humming"], "weight": 1, "symptom": "Humming from the motor"},
+        {"field": "notes", "op": "keywords", "value": ["overload", "trip", "heavy", "stall", "jam", "blocked chute", "buildup"], "weight": 3, "symptom": "Notes mention overload, tripping or jamming"}
+      ],
+      "inspection_steps": [
+        "Measure motor current and compare with the nameplate.",
+        "Check the belt load, chute and transfer points for blockage or overfeeding.",
+        "Check for seized rollers or a dragging belt that adds resistance.",
+        "Check motor ventilation and the thermal protection settings."
+      ],
+      "maintenance_actions": [
+        "Reduce the feed rate or clear the blockage.",
+        "Free or replace seized rollers that are adding drag.",
+        "Review motor and gearbox sizing if the load is above design."
+      ],
+      "safety": [
+        "Lock out the drive and release the belt tension before clearing a jam.",
+        "Do not reset a tripped motor repeatedly without finding the cause."
+      ]
+    },
+    {
+      "id": "belt_wear_low_tension",
+      "name": "Belt wear, damage or loss of tension",
+      "reasoning": "A worn, stretched or damaged belt loses grip and throughput and can wander or sag between idlers.",
+      "triggers": [
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 2, "symptom": "Reduced throughput"},
+        {"field": "noise", "op": "in", "value": ["squealing", "unusual"], "weight": 1, "symptom": "Squealing or unusual noise"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration"},
+        {"field": "notes", "op": "keywords", "value": ["crack", "fray", "worn", "tear", "stretch", "tension", "sag", "splice", "edge damage", "cut"], "weight": 3, "symptom": "Notes mention wear, cracks, stretch or sag"}
+      ],
+      "inspection_steps": [
+        "Inspect the belt surface, edges and splices for cuts, fraying and cracks.",
+        "Check belt sag between idlers and the take-up travel remaining.",
+        "Measure belt thickness against the original specification.",
+        "Check the splices for separation."
+      ],
+      "maintenance_actions": [
+        "Repair or re-splice the damaged section.",
+        "Re-tension the belt or shorten it if the take-up is out of travel.",
+        "Plan belt replacement if wear is widespread."
+      ],
+      "safety": [
+        "Lock out the drive and block the belt against movement before splicing or repair.",
+        "Wear cut-resistant gloves when handling frayed belt or steel cord."
+      ]
+    },
+    {
+      "id": "drive_reducer_fault",
+      "name": "Drive gearbox / reducer fault",
+      "reasoning": "A worn or under-lubricated reducer makes whining or grinding noise, runs hot and may leak oil.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["whining", "grinding"], "weight": 3, "symptom": "Whining or grinding from the gearbox"},
+        {"field": "leakage", "op": "in", "value": ["minor", "major"], "weight": 2, "symptom": "Oil leakage at the gearbox"},
+        {"field": "temperature_c", "op": "gte", "value": 80, "weight": 2, "symptom": "High gearbox temperature (80 °C or more)"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration"},
+        {"field": "notes", "op": "keywords", "value": ["gearbox", "reducer", "oil", "gear", "leak"], "weight": 3, "symptom": "Notes mention the gearbox, oil or leaks"}
+      ],
+      "inspection_steps": [
+        "Check the gearbox oil level, colour and smell, and look for metal particles.",
+        "Check the seals, covers and breather for leaks.",
+        "Compare gearbox temperature with the motor and with previous readings.",
+        "Check the coupling and the torque arm or mounting."
+      ],
+      "maintenance_actions": [
+        "Top up or change the oil with the specified grade.",
+        "Replace leaking seals and clear the breather.",
+        "Plan an overhaul or replacement if the gears or bearings are worn."
+      ],
+      "safety": [
+        "Lock out the drive and release belt tension before opening the gearbox.",
+        "Let hot oil cool before draining or sampling."
+      ]
+    }
+  ]
+}

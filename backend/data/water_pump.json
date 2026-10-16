@@ -1,0 +1,209 @@
+{
+  "machine": "water_pump",
+  "label": "Water Pump",
+  "description": "Centrifugal water pump driven by an electric motor through a coupling.",
+  "typical_temp_range_c": [30, 70],
+  "fields": ["temperature_c", "vibration", "noise", "leakage", "speed_rpm", "performance", "notes"],
+  "general_safety": [
+    "Isolate and lock out the driver and close the suction and discharge valves before opening the pump.",
+    "Depressurise and drain the casing before removing seals, plugs or covers; hot or pressurised water can cause burns.",
+    "Keep guards on the coupling and never touch it while the pump is running."
+  ],
+  "general_inspection": [
+    "Check suction and discharge pressure, flow and motor current against the pump curve or nameplate.",
+    "Check visually for leaks, loose bolts, coupling condition and pipe strain.",
+    "Confirm the pump is primed and the suction line is free of air and blockage."
+  ],
+  "faults": [
+    {
+      "id": "misalignment",
+      "name": "Shaft misalignment",
+      "reasoning": "Misalignment between the pump and driver shafts loads the coupling and bearings and typically produces high vibration, often axial, sometimes with heat and noise.",
+      "triggers": [
+        {"field": "vibration", "op": "in", "value": ["high"], "weight": 3, "symptom": "High vibration"},
+        {"field": "vibration", "op": "in", "value": ["medium"], "weight": 1, "symptom": "Moderate vibration"},
+        {"field": "noise", "op": "in", "value": ["knocking", "rattling", "humming", "unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "temperature_c", "op": "gte", "value": 60, "weight": 1, "symptom": "Raised temperature at the bearings or coupling"},
+        {"field": "notes", "op": "keywords", "value": ["misalign", "coupling", "shaft", "axial", "alignment"], "weight": 3, "symptom": "Notes mention alignment, coupling or shaft problems"},
+        {"field": "notes", "op": "keywords", "value": ["vibration", "shake", "shaking"], "weight": 1, "symptom": "Notes mention vibration"}
+      ],
+      "inspection_steps": [
+        "Check pump-to-motor alignment with a dial gauge or laser alignment tool.",
+        "Check for soft foot and loose foundation or baseplate bolts.",
+        "Inspect the coupling for wear, cracks or overheated elements.",
+        "Check whether connected pipework is pulling on the casing (pipe strain)."
+      ],
+      "maintenance_actions": [
+        "Re-align pump and motor within the coupling manufacturer's tolerance.",
+        "Replace a worn coupling element.",
+        "Shim or re-grout the baseplate if uneven, and support the pipework properly."
+      ],
+      "safety": [
+        "Lock out the driver before touching the coupling.",
+        "Re-fit the coupling guard before restarting."
+      ]
+    },
+    {
+      "id": "imbalance",
+      "name": "Impeller imbalance",
+      "reasoning": "Uneven mass on the rotating assembly (for example a fouled, eroded or damaged impeller) produces vibration at running speed that grows with speed.",
+      "triggers": [
+        {"field": "vibration", "op": "in", "value": ["high"], "weight": 3, "symptom": "High vibration"},
+        {"field": "vibration", "op": "in", "value": ["medium"], "weight": 1, "symptom": "Moderate vibration"},
+        {"field": "noise", "op": "in", "value": ["rattling", "humming", "unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "speed_rpm", "op": "gte", "value": 2900, "weight": 1, "symptom": "High speed amplifies imbalance forces"},
+        {"field": "notes", "op": "keywords", "value": ["imbalance", "unbalance", "wobble", "impeller", "fouling", "buildup", "build-up", "damaged"], "weight": 3, "symptom": "Notes mention imbalance or impeller damage or fouling"},
+        {"field": "notes", "op": "keywords", "value": ["vibration", "shake", "shaking"], "weight": 1, "symptom": "Notes mention vibration"}
+      ],
+      "inspection_steps": [
+        "Inspect the impeller for fouling, erosion, cracks or missing material.",
+        "Check for a bent shaft or a loose impeller nut or key.",
+        "Measure vibration amplitude and see whether it is mainly at running speed.",
+        "Check whether the vibration changes with speed or flow."
+      ],
+      "maintenance_actions": [
+        "Clean the impeller and remove deposits.",
+        "Replace or re-balance a damaged or eroded impeller.",
+        "Straighten or replace a bent shaft."
+      ],
+      "safety": [
+        "Lock out the driver and drain the casing before opening the pump.",
+        "Handle the impeller carefully; worn edges can be sharp."
+      ]
+    },
+    {
+      "id": "bearing_wear",
+      "name": "Bearing wear",
+      "reasoning": "Worn or poorly lubricated bearings cause rising vibration, grinding or whining noise and heat at the bearing housing. Wear often develops gradually and is easily confused with misalignment.",
+      "triggers": [
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 3, "symptom": "Raised vibration"},
+        {"field": "noise", "op": "in", "value": ["grinding", "whining", "rattling"], "weight": 3, "symptom": "Bearing-type noise (grinding, whining or rattling)"},
+        {"field": "noise", "op": "in", "value": ["unusual"], "weight": 2, "symptom": "Unusual noise"},
+        {"field": "temperature_c", "op": "gte", "value": 70, "weight": 2, "symptom": "High bearing housing temperature (70 °C or more)"},
+        {"field": "notes", "op": "keywords", "value": ["bearing", "grease", "lubric", "grind", "squeal", "seize"], "weight": 3, "symptom": "Notes mention bearings, grease or grinding"}
+      ],
+      "inspection_steps": [
+        "Measure bearing housing temperature and compare drive-end and non-drive-end.",
+        "Listen with a stethoscope or screwdriver for grinding or rumbling.",
+        "Check the lubricant level, condition and greasing history.",
+        "Check shaft end play and free rotation by hand, with the pump locked out."
+      ],
+      "maintenance_actions": [
+        "Re-lubricate with the specified lubricant and quantity.",
+        "Replace worn bearings and check shaft and housing fits.",
+        "Find out why the bearing wore (misalignment, contamination, overloading) so it does not repeat."
+      ],
+      "safety": [
+        "Lock out the driver before touching the shaft or coupling.",
+        "Allow hot bearing housings to cool before handling."
+      ]
+    },
+    {
+      "id": "cavitation",
+      "name": "Cavitation",
+      "reasoning": "When suction pressure is too low, vapour bubbles form and collapse inside the pump, causing a crackling or gravel-like noise, vibration, reduced flow and damage to the impeller over time. It depends on the suction conditions, so it only applies where those could be poor.",
+      "triggers": [
+        {"field": "noise", "op": "in", "value": ["crackling"], "weight": 3, "symptom": "Crackling or gravel-like noise"},
+        {"field": "noise", "op": "in", "value": ["unusual", "rattling"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 2, "symptom": "Raised vibration"},
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 2, "symptom": "Reduced flow or pressure"},
+        {"field": "notes", "op": "keywords", "value": ["cavitat", "gravel", "marbles", "crackl", "suction", "npsh", "airlock", "air lock", "throttled"], "weight": 3, "symptom": "Notes mention suction problems, gravel noise or cavitation"}
+      ],
+      "inspection_steps": [
+        "Check the suction line for blockage, a partly closed valve, a clogged strainer or air leaks.",
+        "Compare the available suction head (NPSH) with the pump's required value.",
+        "Check liquid temperature and suction level or tank level.",
+        "Check whether the noise changes when the discharge valve is opened slightly."
+      ],
+      "maintenance_actions": [
+        "Clear or enlarge restrictions in the suction line and clean the strainer.",
+        "Raise the suction level or reduce suction losses, and keep the liquid cooler if possible.",
+        "Inspect the impeller for pitting and replace it if damaged."
+      ],
+      "safety": [
+        "Do not run the pump dry while checking suction conditions.",
+        "Depressurise and drain before opening the suction line or strainer."
+      ]
+    },
+    {
+      "id": "loose_mounting",
+      "name": "Loose mounting / foundation",
+      "reasoning": "Loose baseplate bolts, a cracked grout bed or soft foot let the pump move under load, giving vibration and knocking or rattling noise.",
+      "triggers": [
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 2, "symptom": "Raised vibration"},
+        {"field": "noise", "op": "in", "value": ["knocking", "rattling"], "weight": 2, "symptom": "Knocking or rattling noise"},
+        {"field": "noise", "op": "in", "value": ["unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "notes", "op": "keywords", "value": ["loose", "bolt", "base", "foundation", "mount", "soft foot", "grout"], "weight": 3, "symptom": "Notes mention loose bolts, base or foundation problems"}
+      ],
+      "inspection_steps": [
+        "Check all baseplate, foundation and casing bolts for tightness.",
+        "Look for cracked grout, rust marks or movement at the baseplate.",
+        "Check for soft foot at the pump and the motor.",
+        "Check whether the pipework supports are loose."
+      ],
+      "maintenance_actions": [
+        "Tighten bolts to the specified torque.",
+        "Repair or replace damaged grout and re-level the baseplate.",
+        "Secure pipework supports."
+      ],
+      "safety": [
+        "Lock out the driver before working on mounting bolts.",
+        "Support the pump safely if the baseplate is being loosened."
+      ]
+    },
+    {
+      "id": "seal_leakage",
+      "name": "Mechanical seal / packing leakage",
+      "reasoning": "A worn seal or packing leaks along the shaft; the cause is often dry running, misalignment, vibration or contamination.",
+      "triggers": [
+        {"field": "leakage", "op": "in", "value": ["minor", "major"], "weight": 3, "symptom": "Visible leakage at the seal or casing"},
+        {"field": "leakage", "op": "in", "value": ["major"], "weight": 1, "symptom": "Heavy leakage"},
+        {"field": "notes", "op": "keywords", "value": ["leak", "drip", "seal", "gland", "packing", "wet"], "weight": 3, "symptom": "Notes mention leakage or seal problems"},
+        {"field": "temperature_c", "op": "gte", "value": 60, "weight": 1, "symptom": "Raised temperature from seal friction"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Vibration can damage seal faces"}
+      ],
+      "inspection_steps": [
+        "Find where the leak comes from: seal faces, gland packing, casing joint or a pipe connection.",
+        "Check seal flush or cooling lines and the condition of the packing.",
+        "Check shaft run-out and vibration, which shorten seal life.",
+        "Confirm the pump has not been running dry."
+      ],
+      "maintenance_actions": [
+        "Replace the mechanical seal or adjust or replace the packing.",
+        "Correct any alignment, vibration or dry-running cause.",
+        "Re-tighten the gland evenly if it is packing, without over-tightening."
+      ],
+      "safety": [
+        "Depressurise and drain the pump before opening the seal area.",
+        "Clean up leaks promptly to prevent slips, and wear gloves if the liquid is hot or hazardous."
+      ]
+    },
+    {
+      "id": "impeller_wear_blockage",
+      "name": "Impeller wear or blockage",
+      "reasoning": "A worn, eroded or partly blocked impeller reduces flow and pressure and can add noise and vibration.",
+      "triggers": [
+        {"field": "performance", "op": "in", "value": ["slight", "major"], "weight": 3, "symptom": "Reduced flow or pressure"},
+        {"field": "notes", "op": "keywords", "value": ["flow", "pressure", "clog", "block", "debris", "impeller", "erosion", "worn"], "weight": 3, "symptom": "Notes mention low flow, blockage or impeller wear"},
+        {"field": "vibration", "op": "in", "value": ["medium", "high"], "weight": 1, "symptom": "Raised vibration"},
+        {"field": "noise", "op": "in", "value": ["rattling", "crackling", "unusual"], "weight": 1, "symptom": "Unusual noise"},
+        {"field": "temperature_c", "op": "gte", "value": 60, "weight": 1, "symptom": "Raised temperature"}
+      ],
+      "inspection_steps": [
+        "Compare current flow, pressure and motor current with the pump curve.",
+        "Check the suction strainer and inlet for debris.",
+        "Inspect the impeller and wear rings for erosion, corrosion or clogging.",
+        "Check the internal clearances against the manufacturer's values."
+      ],
+      "maintenance_actions": [
+        "Clear the blockage and clean the strainer.",
+        "Replace worn wear rings or the impeller.",
+        "Consider filtering the liquid if debris is a recurring problem."
+      ],
+      "safety": [
+        "Lock out the driver and drain the casing before opening the pump.",
+        "Wear cut-resistant gloves when handling the impeller."
+      ]
+    }
+  ]
+}
