@@ -133,6 +133,22 @@ def test_unknown_and_empty_values_become_missing():
     assert inputs["notes"] is None
 
 
+def test_vibration_none_is_treated_as_low(scenario_1):
+    # The frontend form defaults vibration to "none"; it must not be rejected.
+    assert normalise_inputs({**scenario_1, "vibration": "none"})["vibration"] == "low"
+    assert ids(diagnose({**scenario_1, "vibration": "none"})) == ids(diagnose(scenario_1))
+
+
+def test_frontend_default_form_values_are_accepted(client):
+    # Exactly what App.jsx starts with, plus a machine: everything "none" or empty.
+    payload = {
+        "machine": "water_pump", "temperature_c": "", "vibration": "none", "noise": "none",
+        "leakage": "none", "speed_rpm": "", "performance": "none", "notes": "",
+    }
+    response = client.post("/api/diagnose", json=payload)
+    assert response.status_code == 200, response.get_json()
+
+
 def test_normalise_inputs_is_idempotent(scenario_1):
     once = normalise_inputs(scenario_1)
     assert normalise_inputs(once) == once

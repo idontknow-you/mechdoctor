@@ -29,7 +29,9 @@ FIELD_DEFS = {
     },
     "vibration": {
         "name": "vibration", "label": "Vibration", "type": "select",
-        "options": _options(("low", "Low"), ("medium", "Medium"), ("high", "High")),
+        "options": _options(
+            ("none", "None noticed"), ("low", "Low"), ("medium", "Medium"), ("high", "High"),
+        ),
     },
     "noise": {
         "name": "noise", "label": "Unusual noise", "type": "select",
@@ -164,6 +166,8 @@ def normalise_inputs(data):
 
     for field in SELECT_FIELDS:
         value = _clean_text(data.get(field))
+        if field == "vibration" and value == "none":
+            value = "low"  # "no vibration noticed" is treated as the lowest level the rules know
         allowed = [option["value"] for option in FIELD_DEFS[field]["options"]]
         if value is not None and value not in allowed:
             raise ValueError(
